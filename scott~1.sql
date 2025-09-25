@@ -319,10 +319,48 @@ ON c.point >= g.g_start
 AND g.gname = 'Notebook'
 ;
 
-SELECT *
-FROM customer
+SELECT p1.profno
+      ,p1.name
+      ,p1.hiredate
+      ,COUNT(p2.hiredate)
+FROM professor p1
+LEFT OUTER JOIN professor p2
+ON p1.hiredate > p2.hiredate
+GROUP BY p1.profno, p1.name, p1.hiredate
+ORDER BY 4
+;
+
+SELECT p1.profno
+      ,p1.name
+      ,p1.hiredate
+      ,COUNT(p2.hiredate)
+FROM professor p1, professor p2
+WHERE p1.hiredate > p2.hiredate(+)
+GROUP BY p1.profno, p1.name, p1.hiredate
+ORDER BY 4
 ;
 
 SELECT *
-FROM gift
+FROM emp
+;
+
+SELECT e1.empno
+      ,e1.ename
+      ,e1.hiredate
+      ,COUNT(e2.hiredate)
+FROM emp e1
+LEFT OUTER JOIN emp e2
+ON e1.hiredate > e2.hiredate
+GROUP BY e1.empno, e1.ename, e1.hiredate
+ORDER BY 3
+;
+
+SELECT e1.empno
+      ,e1.ename
+      ,e1.hiredate
+      ,COUNT(e2.hiredate)
+FROM emp e1, emp e2
+WHERE e1.hiredate > e2.hiredate(+)
+GROUP BY e1.empno, e1.ename, e1.hiredate
+ORDER BY 3
 ;

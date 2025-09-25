@@ -1,11 +1,11 @@
-select username from all_users;
+SELECT username FROM all_users;
 
-alter session set "_ORACLE_SCRIPT"=true;
+ALTER SESSION SET "_ORACLE_SCRIPT"=true;
 
-create user scott
-identified by tiger
-default tablespace users
-temporary tablespace temp;
-
-grant connect, resource, unlimited tablespace
-to scott;
+CREATE USER  scott
+IDENTIFIED BY tiger
+DEFAULT TABLESPACE users
+TEMPORARY TABLESPACE temp;
+ 
+GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE
+TO scott;
