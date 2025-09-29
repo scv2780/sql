@@ -6,6 +6,7 @@ SELECT MAX(sal + NVL(comm, 0))
       ,TRUNC(AVG(sal + NVL(comm, 0)), 1)
 FROM emp
 ;
+
 -- 210p 2번 문제
 SELECT * FROM student;
 ---- 가로
@@ -36,11 +37,39 @@ ON SUBSTR(s.birthday, 4, 2) = m.MM
 GROUP BY m.MM
 ORDER BY 1
 ;
+
 -- 210p 3번 문제
 SELECT * FROM student;
 
-SELECT COUNT (*) 
-      ,CASE (SUBSTR()
+SELECT COUNT(*) AS "TOTAL"
+      ,COUNT(CASE SUBSTR(tel, 0, INSTR(tel, ')')-1) WHEN '02' THEN 'SEOUL' END) AS "SEOUL"
+      ,COUNT(CASE SUBSTR(tel, 0, INSTR(tel, ')')-1) WHEN '031' THEN 'GYEONGGI' END) AS "GYEONGGI"
+      ,COUNT(CASE SUBSTR(tel, 0, INSTR(tel, ')')-1) WHEN '051' THEN 'BUSAN' END) AS "BUSAN"
+      ,COUNT(CASE SUBSTR(tel, 0, INSTR(tel, ')')-1) WHEN '052' THEN 'ULSAN' END) AS "ULSAN"
+      ,COUNT(CASE SUBSTR(tel, 0, INSTR(tel, ')')-1) WHEN '053' THEN 'DAEGU' END) AS "DAEGU"
+      ,COUNT(CASE SUBSTR(tel, 0, INSTR(tel, ')')-1) WHEN '055' THEN 'GYEONGNAM' END) AS "GYEONGNAM"
 FROM student;
 
+-- 211P 4번 문제
+SELECT * FROM emp;
+
+INSERT INTO emp(empno, deptno, ename, sal)
+VALUES(1000, 10, 'Tiger', 3600);
+INSERT INTO emp(empno, deptno, ename, sal)
+VALUES(2000, 10, 'Cat', 3000);
+COMMIT;
+
+SELECT NVL(TO_CHAR(deptno), 'TOTAL') "DEPTNO"
+      ,SUM(CASE WHEN job = 'CLERK' THEN sal ELSE 0 END) AS "CLERK"
+      ,SUM(CASE WHEN job = 'MANAGER' THEN sal ELSE 0 END) AS "MANAGER"
+      ,SUM(CASE WHEN job = 'PRESIDENT' THEN sal ELSE 0 END) AS "PRESIDENT"
+      ,SUM(CASE WHEN job = 'ANALYST' THEN sal ELSE 0 END) AS "ANALYST"
+      ,SUM(CASE WHEN job = 'SALESMAN' THEN sal ELSE 0 END) AS "SALESMAN"
+      ,SUM(CASE WHEN job IS NOT NULL THEN sal ELSE 0 END) AS "TOTAL"
+FROM emp e
+GROUP BY ROLLUP(deptno)
+ORDER BY 1
+;
+
+-- 212P 5번 문제
 
