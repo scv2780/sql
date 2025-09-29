@@ -8,7 +8,7 @@ FROM emp
 ;
 -- 210p 2번 문제
 SELECT * FROM student;
-
+---- 가로
 SELECT COUNT(*) || 'EA' AS "TOTAL"
       ,COUNT(DECODE(SUBSTR(birthday, 4, 2), '01' , 1, NULL)) || 'EA' AS "JAN"
       ,COUNT(DECODE(SUBSTR(birthday, 4, 2), '02' , 1, NULL)) || 'EA' AS "FEB"
@@ -24,14 +24,7 @@ SELECT COUNT(*) || 'EA' AS "TOTAL"
       ,COUNT(DECODE(SUBSTR(birthday, 4, 2), '12' , 1, NULL)) || 'EA' AS "DEC"
 FROM student
 ;
-
-SELECT SUBSTR(birthday, 4, 2) AS "MM"
-      ,COUNT(*) || 'EA' AS "EA"
-FROM student
-GROUP BY SUBSTR(birthday, 4, 2)
-ORDER BY 1
-;
-
+----세로
 WITH months AS(SELECT LPAD(LEVEL, 2, '0') AS "MM"
       FROM DUAL
       CONNECT BY LEVEL <= 12)
@@ -43,4 +36,11 @@ ON SUBSTR(s.birthday, 4, 2) = m.MM
 GROUP BY m.MM
 ORDER BY 1
 ;
+-- 210p 3번 문제
+SELECT * FROM student;
+
+SELECT COUNT (*) 
+      ,CASE (SUBSTR()
+FROM student;
+
 
