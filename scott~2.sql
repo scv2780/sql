@@ -387,3 +387,4 @@ MODIFY board_no NUMBER(10);
 INSERT INTO board_t(board_no, title, content, writer)
 SELECT board_t_seq.nextval, title, content, writer
 FROM board_t;
+

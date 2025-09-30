@@ -1,0 +1,229 @@
+SELECT * FROM tab;
+
+SELECT *
+FROM employees; --> departments, jobs
+
+SELECT *
+FROM departments; --> locations
+
+SELECT *
+FROM locations; --> countries
+
+SELECT *
+FROM countries; --> regions
+
+SELECT *
+FROM regions;
+
+SELECT *
+FROM jobs;
+----------------------------------------
+SELECT e.employee_id
+      ,e.first_name
+      ,l.*
+FROM employees e
+JOIN departments d
+ON e.department_id = d.department_id
+JOIN locations l
+ON d.location_id = l.location_id
+WHERE e.employee_id = '198'
+;
+
+SELECT e.employee_id
+      ,e.first_name
+      ,e.last_name
+      ,l.street_address
+      ,l.city
+FROM employees e
+JOIN jobs j
+ON e.job_id = j.job_id
+JOIN departments d
+ON e.department_id = d.department_id
+JOIN locations l
+ON d.location_id = l.location_id
+WHERE e.job_id = 'IT_PROG'
+;
+
+SELECT e.*
+FROM departments d
+JOIN employees e
+ON d.manager_id = e.employee_id
+WHERE e.employee_id = '103'
+;
+
+-- sal이 job의 급여에서 벗어난 사람 조회
+-- JOIN으로
+SELECT e.*
+      ,j.min_salary
+      ,j.max_salary
+FROM employees e
+JOIN jobs j
+ON e.job_id = j.job_id
+WHERE e.salary < j.min_salary
+OR e.salary > j.max_salary
+;
+
+-- 서브쿼리, EXISTS로 JOIN
+SELECT e.*
+FROM employees e
+WHERE NOT EXISTS (SELECT *
+                  FROM jobs j
+                  WHERE e.job_id = j.job_id
+                  AND e.salary BETWEEN j.min_salary AND j.max_salary)
+;
+-- 시험
+SELECT *
+FROM employees; --> departments, jobs
+
+SELECT *
+FROM departments; --> locations
+
+SELECT *
+FROM locations; --> countries
+
+SELECT *
+FROM countries; --> regions
+
+SELECT *
+FROM regions;
+
+SELECT *
+FROM jobs;
+-- 1번
+SELECT employee_id
+      ,last_name
+      ,salary
+      ,department_id
+FROM employees
+WHERE salary BETWEEN 7000 AND 12000
+AND last_name LIKE 'H%'
+;
+-- 2번
+SELECT employee_id
+      ,last_name
+      ,job_id
+      ,salary
+      ,department_id
+FROM employees 
+WHERE department_id BETWEEN 50 AND 60
+AND salary > 5000
+;
+-- 3번
+SELECT last_name
+      ,salary
+      ,CASE WHEN salary <= 5000 THEN salary + (salary*0.2)
+            WHEN salary <= 10000 THEN salary + (salary*0.15)
+            WHEN salary <= 15000 THEN salary + (salary*0.1)
+            WHEN salary >= 15001 THEN salary
+            END AS "SAL+"
+FROM employees
+WHERE :employee_id = employee_id
+;
+-- 4번
+SELECT d.department_id
+      ,d.department_name
+      ,l.city
+FROM departments d
+JOIN locations l
+ON d.location_id = l.location_id
+;
+-- 5번
+SELECT e.employee_id
+      ,e.last_name
+      ,e.job_id
+FROM employees e
+WHERE e.department_id = (SELECT d.department_id
+                         FROM departments d
+                         WHERE department_name = 'IT')
+;
+-- 6번
+SELECT *
+FROM employees
+WHERE hire_date < '2004/01/01'
+AND job_id = 'ST_CLERK'
+;
+-- 7번
+SELECT last_name
+      ,job_id
+      ,salary
+      ,commission_pct
+FROM employees
+WHERE commission_pct IS NOT NULL
+ORDER BY salary
+;
+-- 8번
+CREATE TABLE PROF
+(PROFNO NUMBER(4)
+,NAME VARCHAR2(15) NOT NULL
+,ID VARCHAR2(15) NOT NULL
+,HIREDATE DATE
+,PAY NUMBER(4)
+);
+-- 9번
+SELECT *
+FROM prof
+;
+
+INSERT INTO prof (profno, name, id, hiredate, pay)
+VALUES (1001, 'Mark', 'm1001', '07/03/01', 800);
+INSERT INTO prof (profno, name, id, hiredate, pay)
+VALUES (1003, 'Adam', 'a1003', '11/03/02', 0);
+
+DELETE FROM prof
+WHERE profno = 1003;
+-- 10번
+SELECT *
+FROM prof
+;
+
+ALTER TABLE prof
+ADD PRIMARY KEY(profno);
+
+ALTER TABLE prof
+ADD (GENDER VARCHAR2(3));
+
+ALTER TABLE prof
+MODIFY (name VARCHAR2(20));
+
+-- 개인프로젝트
+-- 계획 예)게시판: 로그인, 글쓰기, 글목록, 글수정...
+--        테이블: 회원테이블, 게시판테이블...
+--        테이블생성, 제약조건
+
+-- 음악 추천 커뮤니티
+-- 회원가입, 로그인, 글쓰기, 글목록, 글수정, 댓글
+-- 회원 정보 테이블, 게시글 테이블, 댓글 테이블
+
+-- 회원 정보 테이블: 회원 번호, 회원 ID, 회원 비밀번호, 닉네임, 이름, 전화번호, 이메일, 가입날짜
+CREATE TABLE member_info
+(m_num NUMBER(20) CONSTRAINT m_num_pk PRIMARY KEY
+,m_id VARCHAR2(100) CONSTRAINT m_id_un UNIQUE NOT NULL
+,m_pw VARCHAR2(100) CONSTRAINT m_pw_nc NOT NULL CHECK(m_pw > 8)
+,nickname VARCHAR2(100) CONSTRAINT nickname_un UNIQUE NOT NULL
+,m_name VARCHAR2(100) CONSTRAINT m_name_nn NOT NULL
+,m_tel NUMBER(20) CONSTRAINT m_tel_nn NOT NULL
+,m_email VARCHAR2(100) CONSTRAINT m_email_nn NOT NULL
+,m_date DATE DEFAULT SYSDATE
+);
+
+-- 게시글 테이블: 게시글 번호, 닉네임, 제목, 게시글, 게시글 날짜
+CREATE TABLE bulletin
+(b_num NUMBER(20) CONSTRAINT b_num_pk PRIMARY KEY
+,nickname VARCHAR2(100) REFERENCES member_info (nickname)
+,b_title VARCHAR2(100) CONSTRAINT b_tielw_nn NOT NULL
+,b_write VARCHAR2(1000) CONSTRAINT b_write_nn NOT NULL
+,b_date DATE DEFAULT SYSDATE
+);
+
+-- 댓글 테이블: 게시글 번호, 댓글 번호, 닉네임, 댓글, 댓글 날짜
+CREATE TABLE comments
+(b_num NUMBER(20) REFERENCES bulletin (b_num)
+,c_num NUMBER(20) CONSTRAINT c_num_pk PRIMARY KEY
+,nickname VARCHAR2(100) REFERENCES member_info (nickname)
+,c_write VARCHAR2(500) CONSTRAINT c_write_nn NOT NULL
+,c_date DATE DEFAULT SYSDATE
+);
+
+SELECT * FROM member_info;
+SELECT * FROM bulletin;
+SELECT * FROM comments;
