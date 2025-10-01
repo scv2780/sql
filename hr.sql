@@ -195,35 +195,40 @@ MODIFY (name VARCHAR2(20));
 -- 회원 정보 테이블, 게시글 테이블, 댓글 테이블
 
 -- 회원 정보 테이블: 회원 번호, 회원 ID, 회원 비밀번호, 닉네임, 이름, 전화번호, 이메일, 가입날짜
-CREATE TABLE member_info
-(m_num NUMBER(20) CONSTRAINT m_num_pk PRIMARY KEY
-,m_id VARCHAR2(100) CONSTRAINT m_id_un UNIQUE NOT NULL
-,m_pw VARCHAR2(100) CONSTRAINT m_pw_nc NOT NULL CHECK(m_pw > 8)
-,nickname VARCHAR2(100) CONSTRAINT nickname_un UNIQUE NOT NULL
-,m_name VARCHAR2(100) CONSTRAINT m_name_nn NOT NULL
-,m_tel NUMBER(20) CONSTRAINT m_tel_nn NOT NULL
-,m_email VARCHAR2(100) CONSTRAINT m_email_nn NOT NULL
-,m_date DATE DEFAULT SYSDATE
+CREATE TABLE member_info (
+    m_num NUMBER(20) CONSTRAINT m_num_pk PRIMARY KEY,
+    m_id VARCHAR2(100) CONSTRAINT m_id_un UNIQUE NOT NULL,
+    m_pw VARCHAR2(100) CONSTRAINT m_pw_nc NOT NULL,
+    nickname VARCHAR2(100) CONSTRAINT nickname_un UNIQUE NOT NULL,
+    m_name VARCHAR2(100) CONSTRAINT m_name_nn NOT NULL,
+    m_tel VARCHAR2(50) CONSTRAINT m_tel_nn NOT NULL,
+    m_email VARCHAR2(100) CONSTRAINT m_email_nn NOT NULL,
+    m_date DATE DEFAULT SYSDATE
 );
 
--- 게시글 테이블: 게시글 번호, 닉네임, 제목, 게시글, 게시글 날짜
-CREATE TABLE bulletin
-(b_num NUMBER(20) CONSTRAINT b_num_pk PRIMARY KEY
-,nickname VARCHAR2(100) REFERENCES member_info (nickname)
-,b_title VARCHAR2(100) CONSTRAINT b_tielw_nn NOT NULL
-,b_write VARCHAR2(1000) CONSTRAINT b_write_nn NOT NULL
-,b_date DATE DEFAULT SYSDATE
+-- 게시글 테이블: 게시글 번호, 회원 번호, 제목, 게시글, 게시글 날짜
+CREATE TABLE bulletin (
+    b_num NUMBER(20) CONSTRAINT b_num_pk PRIMARY KEY,
+    m_num NUMBER(20) REFERENCES member_info (m_num),  -- FK로 회원번호 참조
+    b_title VARCHAR2(100) CONSTRAINT b_title_nn NOT NULL,
+    b_write VARCHAR2(1000) CONSTRAINT b_write_nn NOT NULL,
+    b_date DATE DEFAULT SYSDATE
 );
 
--- 댓글 테이블: 게시글 번호, 댓글 번호, 닉네임, 댓글, 댓글 날짜
-CREATE TABLE comments
-(b_num NUMBER(20) REFERENCES bulletin (b_num)
-,c_num NUMBER(20) CONSTRAINT c_num_pk PRIMARY KEY
-,nickname VARCHAR2(100) REFERENCES member_info (nickname)
-,c_write VARCHAR2(500) CONSTRAINT c_write_nn NOT NULL
-,c_date DATE DEFAULT SYSDATE
+-- 댓글 테이블: 댓글 번호, 게시글 번호, 회원 번호, 댓글, 댓글 날짜
+CREATE TABLE comments (
+    c_num NUMBER(20) CONSTRAINT c_num_pk PRIMARY KEY,
+    b_num NUMBER(20) REFERENCES bulletin (b_num),     -- 게시글 참조
+    m_num NUMBER(20) REFERENCES member_info (m_num),  -- 회원 참조
+    c_write VARCHAR2(500) CONSTRAINT c_write_nn NOT NULL,
+    c_date DATE DEFAULT SYSDATE
 );
+CREATE SEQUENCE member_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 
 SELECT * FROM member_info;
 SELECT * FROM bulletin;
 SELECT * FROM comments;
+
+DROP TABLE comments;
+DROP TABLE bulletin;
+DROP TABLE member_info;
