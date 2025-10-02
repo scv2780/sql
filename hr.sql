@@ -223,7 +223,34 @@ CREATE TABLE comments (
     c_write VARCHAR2(500) CONSTRAINT c_write_nn NOT NULL,
     c_date DATE DEFAULT SYSDATE
 );
-CREATE SEQUENCE member_seq START WITH 1 INCREMENT BY 1 NOCACHE;
+-- 좋아요 테이블: 좋아요 고유 번호, 게시물 번호, 회원 번호
+CREATE TABLE likes (
+    l_num NUMBER(20) CONSTRAINT l_num_pk PRIMARY KEY,  -- 좋아요 고유 번호
+    b_num   NUMBER(20) REFERENCES bulletin(b_num) ON DELETE CASCADE, -- 어떤 게시글인지
+    m_num   NUMBER(20) REFERENCES member_info(m_num) ON DELETE CASCADE, -- 누가 눌렀는지
+    CONSTRAINT unique_like UNIQUE (b_num, m_num) -- 같은 사람이 같은 글에 한 번만
+);
+
+SELECT MAX(m_num) FROM member_info;
+SELECT MAX(b_num) FROM bulletin;
+
+CREATE SEQUENCE member_seq START WITH 3 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE bulletin_seq START WITH 5 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE likes_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE comments_seq START WITH 1 INCREMENT BY 1;
+
+
+DROP SEQUENCE bulletin_seq;
+DROP SEQUENCE member_seq;
+
+INSERT INTO bulletin(b_num, m_num, b_title, b_write, b_date)
+VALUES(1, 1, '첫번째 게시물이오', '테스트용이니 신경쓰지 마시오', SYSDATE);
+INSERT INTO bulletin(b_num, m_num, b_title, b_write, b_date)
+VALUES(2, 1, '두번째 게시물이오', '테스트용이니 신경쓰지 말라니깐', SYSDATE);
+INSERT INTO bulletin(b_num, m_num, b_title, b_write, b_date)
+VALUES(3, 2, '세번째 게시물이오', '저 양반이 원래 좀 이상하니 이해하시오', SYSDATE);
+INSERT INTO bulletin(b_num, m_num, b_title, b_write, b_date)
+VALUES(4, 2, '네번째 게시물이오', '그래도 애는 착해 아마', SYSDATE);
 
 SELECT * FROM member_info;
 SELECT * FROM bulletin;
@@ -232,3 +259,14 @@ SELECT * FROM comments;
 DROP TABLE comments;
 DROP TABLE bulletin;
 DROP TABLE member_info;
+DROP SEQUENCE member_seq;
+
+SELECT b.b_num, m.m_num, m.nickname, b.b_title, b.b_write, b.b_date
+FROM bulletin b
+JOIN member_info m
+ON b.m_num = m.m_num
+;
+
+INSERT INTO bulletin (b_num, m_num, b_title, b_write, b_date)
+VALUES (bulletin_seq.NEXTVAL, )
+;
