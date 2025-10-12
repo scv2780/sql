@@ -243,6 +243,10 @@ CREATE SEQUENCE comments_seq START WITH 1 INCREMENT BY 1;
 DROP SEQUENCE bulletin_seq;
 DROP SEQUENCE member_seq;
 
+INSERT INTO member_info(m_num, m_id, m_pw, nickname, m_name, m_tel, m_email, m_date)
+VALUES(1, 'user01', '12345678', '길동이', '홍길동', '01012345678', 'asd@asdasd', SYSDATE);
+INSERT INTO member_info(m_num, m_id, m_pw, nickname, m_name, m_tel, m_email, m_date)
+VALUES(2, 'user02', '12345678', '준식이여', '구준식', '01023456789', 'qwe@qweqwe', SYSDATE);
 INSERT INTO bulletin(b_num, m_num, b_title, b_write, b_date)
 VALUES(1, 1, '첫번째 게시물이오', '테스트용이니 신경쓰지 마시오', SYSDATE);
 INSERT INTO bulletin(b_num, m_num, b_title, b_write, b_date)
