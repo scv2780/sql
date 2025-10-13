@@ -211,7 +211,7 @@ CREATE TABLE bulletin (
     b_num NUMBER(20) CONSTRAINT b_num_pk PRIMARY KEY,
     m_num NUMBER(20) REFERENCES member_info (m_num),  -- FK로 회원번호 참조
     b_title VARCHAR2(100) CONSTRAINT b_title_nn NOT NULL,
-    b_write VARCHAR2(1000) CONSTRAINT b_write_nn NOT NULL,
+    b_write VARCHAR2(4000) CONSTRAINT b_write_nn NOT NULL,
     b_date DATE DEFAULT SYSDATE
 );
 
@@ -274,3 +274,6 @@ ON b.m_num = m.m_num
 INSERT INTO bulletin (b_num, m_num, b_title, b_write, b_date)
 VALUES (bulletin_seq.NEXTVAL, )
 ;
+
+ALTER TABLE bulletin
+MODIFY(b_write VARCHAR2(4000));
